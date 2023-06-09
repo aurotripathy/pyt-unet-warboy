@@ -17,9 +17,19 @@ from furiosa.quantizer import quantize, Calibrator, CalibrationMethod
 
 from pudb import set_trace
 
-BATCH_SIZE = 1
+import argparse
+
+parser = argparse.ArgumentParser(
+                    prog='convert_2_onnx',
+                    description='converts to onnx',
+                    epilog='look for file with .onnx suffix')
+
+parser.add_argument('--bs', required=True, type=int)
+args = parser.parse_args()
+print(f'Requested batch size: {args.bs}')
+
+BATCH_SIZE = args.bs 
 def create_quantized_dfg():
-    set_trace()
     model = onnx.load_model("pyt_unet.onnx")
     preprocess = transforms.Compose(
         [transforms.ToTensor(),
@@ -27,14 +37,16 @@ def create_quantized_dfg():
          transforms.Normalize(mean=(0.1307,), std=(0.3081,))]
     )   
 
-    calibration_data = torchvision.datasets.ImageNet('../',
-                                                     split='val',
-                                                     transform=preprocess)
-    calibration_dataloader = torch.utils.data.DataLoader(calibration_data,
+    calibration_dataset = torchvision.datasets.ImageNet('../',
+                                                        split='val',
+                                                        transform=preprocess)
+    print(f'shape of calibration data: {calibration_dataset}')
+    
+    calibration_dataloader = torch.utils.data.DataLoader(calibration_dataset,
                                           batch_size=BATCH_SIZE,
                                           shuffle=True)
     model = optimize_model(model)
-
+    # optimize_model(model, input_shapes={"input": [BATCH_SIZE, 3, 1050, 160]}) 
     calibrator = Calibrator(model, CalibrationMethod.MIN_MAX_ASYM)
 
     for calibration_data, _ in tqdm.tqdm(calibration_dataloader,
@@ -44,11 +56,13 @@ def create_quantized_dfg():
         print(f'calibration data shape: {calibration_data.shape}')
         # calibration_data = torch.permute(calibration_data, (0, 2, 3, 1))
         # print(f'calibration data shape: {calibration_data.shape}')
+
+        # set_trace()
         calibrator.collect_data([[calibration_data.numpy()]])
 
     ranges = calibrator.compute_range()
     print(f'ranges" {ranges}')
-    set_trace()
+    # set_trace()
 
     model_quantized = quantize(model, ranges)
 
