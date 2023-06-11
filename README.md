@@ -16,4 +16,4 @@ Specify batch-size with the `bs` argument.
 ```
 
 
-
+Note: This does not account for ant warmup time, some variability is expacted
