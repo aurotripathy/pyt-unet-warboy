@@ -15,7 +15,7 @@ Specify batch-size with the `bs` argument.
 ./async_compile_run.py --bs 2
 ```
 
-or 
+or run them all with:
 
 ```
 ./run-all <n> # where n is the batch-size
