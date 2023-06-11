@@ -1,5 +1,5 @@
 
-*****Experiments with batch-size on a Unet-like model.
+**** Experiments with batch-size on a Unet-like model.
 
 Since we're working with random weights and synthetic data, no accuracy measurements can be made, only perfformance measurements are made.
 
