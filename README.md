@@ -21,4 +21,4 @@ or
 ./run-all <n> # where n is the batch-size
 ```
 
-Note: This does not account for ant warmup time, some variability is expacted
+Note: This does not account for any warmup time; some variability is expacted
