@@ -47,7 +47,7 @@ def run_async():
     for i in range(0, nb_batches):
         context, outputs = queue.recv(100) # provide timeout param. If None, queue.recv() will be blocking.
         context_list.append(context)
-        output_list.append(outputs)
+        output_list.append(outputs.numpy())  # https://github.com/furiosa-ai/furiosa-sdk-private/issues/439)
     
     toc = time.perf_counter()
     
