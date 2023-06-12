@@ -45,7 +45,7 @@ def run_async():
     context_list = []
     output_list = []
     for i in range(0, nb_batches):
-        context, outputs = queue.recv(100) # provide timeout param. If None, queue.recv() will be blocking.
+        context, outputs = queue.recv(400) # provide timeout param. If None, queue.recv() will be blocking.
         context_list.append(context)
         output_list.append(outputs.numpy())  # https://github.com/furiosa-ai/furiosa-sdk-private/issues/439)
     
@@ -53,7 +53,7 @@ def run_async():
     
     print("== Output ==")
     for context, outputs in zip(context_list, output_list):
-        print(f"Context: {context}, Predict: {np.argmax(outputs[0].numpy())}")
+        print(f"Context: {context}, Predict: {np.argmax(outputs[0])}")
 
     # housekeeping
     if queue:
@@ -61,8 +61,8 @@ def run_async():
     if submitter:
         submitter.close()
     
-    print(f"Completed {nb_batches} inference of unet in {toc - tic:0.4f} seconds")
-    print(f'Unet inference through put: {args.bs * (1/((toc - tic) / nb_batches)):0.4}/sec')
+    print(f"Completed {nb_batches} of inference with batch size {args.bs} in {toc - tic:0.4f} seconds")
+    print(f'Unet inference through-put: {args.bs * (1/((toc - tic) / nb_batches)):0.4}/sec')
 
 
 if __name__ == "__main__":
