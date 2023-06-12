@@ -13,6 +13,8 @@ Specify batch-size with the `bs` argument.
 The quantization step uses ImageNet images for calibration. 
 ```
 ./quantize.py --bs 2
+```
+The run step uses synthetic images.
 
 ./async_compile_run.py --bs 2
 ```
