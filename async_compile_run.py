@@ -12,9 +12,9 @@ logging.basicConfig(level=LOGLEVEL)
 import argparse
 
 parser = argparse.ArgumentParser(
-                    prog='convert_2_onnx',
-                    description='converts to onnx',
-                    epilog='look for file with .onnx suffix')
+                    prog='async_compile_run.py',
+                    description='compile and run',
+                    epilog='look for quantized file with .dfg suffix')
 
 parser.add_argument('--bs', required=True, type=int)
 args = parser.parse_args()
