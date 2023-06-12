@@ -18,7 +18,7 @@ Specify batch-size with the `bs` argument.
 or run them all with:
 
 ```
-./run-all <n> # where n is the batch-size
+./run-all.sh <n> # where n is the batch-size
 ```
 
 Note: This 'benchmark' does not account for any warmup time; some variability is expected
