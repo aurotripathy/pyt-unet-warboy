@@ -9,7 +9,9 @@ Specify batch-size with the `bs` argument.
 
 ```
 ./convert_2_onnx.py --bs 2
-
+```
+The quantization step uses ImageNet images for calibration. 
+```
 ./quantize.py --bs 2
 
 ./async_compile_run.py --bs 2
