@@ -15,11 +15,12 @@ The quantization step uses ImageNet images for calibration.
 ./quantize.py --bs 2
 ```
 The run step uses synthetic images.
+```
 
 ./async_compile_run.py --bs 2
 ```
 
-or run them all with:
+Run all the steps with:
 
 ```
 ./run-all.sh <n> # where n is the batch-size
