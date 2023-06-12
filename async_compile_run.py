@@ -18,8 +18,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('--bs', required=True, type=int)
 args = parser.parse_args()
-print(f'requested batch size: {args.bs}')
-batch_size = args.bs
+print(f'Requested batch size: {args.bs}')
 
 nb_batches = 100
 
@@ -29,8 +28,8 @@ def run_async():
 
     submitter, queue = session.create_async(str(quantized_model_path),
                                 worker_num=1,
-                                input_queue_size=100 * batch_size, # requests you can submit without blocking
-                                            output_queue_size=100 * batch_size)
+                                input_queue_size=100 * args.bs, # requests you can submit without blocking
+                                            output_queue_size=100 * args.bs)
     print(f'input: {submitter.inputs()[0]}')
     print(f'output: {submitter.outputs()[0]}')    
     
@@ -63,7 +62,7 @@ def run_async():
         submitter.close()
     
     print(f"Completed {nb_batches} inference of unet in {toc - tic:0.4f} seconds")
-    print(f'Unet inference through put: {batch_size * (1/((toc - tic) / nb_batches)):0.4}/sec')
+    print(f'Unet inference through put: {args.bs * (1/((toc - tic) / nb_batches)):0.4}/sec')
 
 
 if __name__ == "__main__":
