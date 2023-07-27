@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-from pyt_unet_model import UNet
+# from pyt_unet_model import UNet
+# from pyt_unet_model_nearest import UNet
+from models.pyt_unet_model_w_conv_transpose import UNet
 import os
 import logging
 import torch
@@ -22,6 +24,7 @@ batch_size = args.bs
 
 input_shape = (batch_size, 3, 1056, 160)
 model = UNet(input_shape)
+print(f'model name: {model.__class__.__name__}')
 from torchsummary import summary
 summary(model, input_size=(3, 1056, 160))
 
