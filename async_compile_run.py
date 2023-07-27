@@ -20,27 +20,33 @@ parser.add_argument('--bs', required=True, type=int)
 args = parser.parse_args()
 print(f'Requested batch size: {args.bs}')
 
-nb_batches = 100
+nb_batches = 600
 
 quantized_model_path = './unet_model_quantized.dfg'
 def run_async():
     runtime.__full_version__
 
     submitter, queue = session.create_async(str(quantized_model_path),
-                                worker_num=1,
-                                input_queue_size=100 * args.bs, # requests you can submit without blocking
-                                            output_queue_size=100 * args.bs)
+                                            device='npu0pe0',
+                                            worker_num=12,
+                                            input_queue_size=nb_batches * args.bs, # requests you can submit without blocking
+                                            output_queue_size=nb_batches * args.bs,
+                                            compiler_config={'graph_lowering_scheme': 'LowerAfterSplit'})
     print(f'input: {submitter.inputs()[0]}')
     print(f'output: {submitter.outputs()[0]}')    
     
     input_tensor = submitter.inputs()[0]
-    tic = time.perf_counter()
+
     # Submit the inference requests asynchronously
+    inputs = []
     for i in range(0, nb_batches):
         # Generate the random input tensor according to the input shape and submit
-        input = np.random.randint(0, 255, input_tensor.shape).astype("float32")
-        submitter.submit(input, context=i)
-    
+        inputs.append(np.random.randint(0, 255, input_tensor.shape).astype("float32"))
+
+    tic = time.perf_counter()
+    for i in range(0, nb_batches):
+        submitter.submit(inputs[i], context=i)
+        
     # Receive the results asynchronously
     context_list = []
     output_list = []
@@ -61,8 +67,8 @@ def run_async():
     if submitter:
         submitter.close()
     
-    print(f"Completed {nb_batches} of inference with batch size {args.bs} in {toc - tic:0.4f} seconds")
-    print(f'Unet inference through-put: {args.bs * (1/((toc - tic) / nb_batches)):0.4}/sec')
+    print(f"Completed {nb_batches} batches of inference with batch size {args.bs} in {toc - tic:0.4f} seconds")
+    print(f'Unet inference through-put: {args.bs * (1/((toc - tic) / nb_batches)):0.3f}/sec')
 
 
 if __name__ == "__main__":
