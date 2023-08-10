@@ -1,0 +1,5 @@
+# conda install pytorch torchvision cpuonly -c pytorch
+pudb
+torchsummary
+onnx
+
